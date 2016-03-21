@@ -81,4 +81,4 @@ def classify(N, classCounts, catHash):
 corpus = 1
 N, classCounts, catHash = train(corpus)
 classify(N, classCounts, catHash)
-system("perl corpus"+corpus+"_predictions.labels TC_provided/corpus"+corpus+"_test.labels")
+os.system("perl corpus"+str(corpus)+"_predictions.labels TC_provided/corpus"+str(corpus)+"_test.labels")
