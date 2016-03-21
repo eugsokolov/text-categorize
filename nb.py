@@ -14,9 +14,9 @@ def get_train_category(corpus):
   (key,val) = line.split()
   labels[key[16:]] = val
   if val in classCounts:
-	classCounts[val] += 1
+   classCounts[val] += 1
   else:
-	classCounts[val] = 1
+   classCounts[val] = 1
  return N, labels, classCounts
 
 def train(corpus):
@@ -33,9 +33,9 @@ def train(corpus):
   for t in text:
  #  if len(t) > 3:
     if t in catHash[cat]:
-	catHash[cat][t] += 1
+     catHash[cat][t] += 1
     else:
-	catHash[cat][t] = 1 
+     catHash[cat][t] = 1 
 
  return N, classCounts, catHash
 
@@ -46,7 +46,7 @@ def get_token_prob(token, bow, M):
   prob = bow[token] / float(M)
   return math.log(prob) 
  else: 
-  return math.log(0.00000001)
+  return math.log(0.05)
 
 
 def classify(N, classCounts, catHash):
@@ -66,7 +66,7 @@ def classify(N, classCounts, catHash):
    prior = math.log(classCounts[c] / float(N))
    tokenProb = 0
    for token in text:
-	tokenProb += get_token_prob(token, catHash[c], sumCatHash[c])
+     tokenProb += get_token_prob(token, catHash[c], sumCatHash[c])
 
    outProb[c] = prior + tokenProb
 
@@ -81,3 +81,4 @@ def classify(N, classCounts, catHash):
 corpus = 1
 N, classCounts, catHash = train(corpus)
 classify(N, classCounts, catHash)
+system("perl corpus"+corpus+"_predictions.labels TC_provided/corpus"+corpus+"_test.labels")
