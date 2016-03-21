@@ -4,6 +4,10 @@ import os
 import re, string
 import math
 
+def my_tokenize(text):
+#try getting rid of stop words, small words, stemming
+ return word_tokenize(text)
+
 def get_train_category(corpus):
  f = "TC_provided/corpus"+str(corpus)+"_train.labels"
  N = 0
@@ -29,25 +33,14 @@ def train(corpus):
  for filename in os.listdir(directory):
   cat = labels[filename]
   raw = open(directory+filename).read()
-  text = word_tokenize(raw)
+  text = my_tokenize(raw)
   for t in text:
- #  if len(t) > 3:
     if t in catHash[cat]:
      catHash[cat][t] += 1
     else:
      catHash[cat][t] = 1 
 
  return N, classCounts, catHash
-
-#calculate the token probability for a given class
-#given training set Bag of Words, bow, and total word count, M
-def get_token_prob(token, bow, M):
- if token in bow:
-  prob = bow[token] / float(M)
-  return math.log(prob) 
- else: 
-  return math.log(0.05)
-
 
 def classify(N, classCounts, catHash):
  directory = "TC_provided/corpus"+str(corpus)+"/test/"
@@ -59,15 +52,24 @@ def classify(N, classCounts, catHash):
 
  for line in open(filelist):
   raw = open("TC_provided/"+line.rstrip('\n')).read()
-  text = word_tokenize(raw)
-  outProb = {} 
+  text = my_tokenize(raw)
+  f = {}
+  testVocab = len(f)
+  for token in text:
+    if token in f:
+	f[token] += 1
+    else:
+	f[token] = 1
 
+  k = 0.05
+  outProb = {} 
+  tokenProb = 0
   for c in classCounts:
    prior = math.log(classCounts[c] / float(N))
-   tokenProb = 0
-   for token in text:
-     tokenProb += get_token_prob(token, catHash[c], sumCatHash[c])
-
+   for token in f:
+	num = catHash[c].get(token, 0.0) + k 
+	den = sumCatHash[c] +  k*testVocab
+	tokenProb += math.log(num / den)
    outProb[c] = prior + tokenProb
 
   out = [k for k, v in outProb.iteritems() if v == max(outProb.values())]
