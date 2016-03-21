@@ -10,17 +10,17 @@ def my_tokenize(text):
 
 def get_train_category(corpus):
  f = "TC_provided/corpus"+str(corpus)+"_train.labels"
- N = 0
+ N = 0.0
  labels = {}
  classCounts = {}
  for line in open(f):
-  N += 1
+  N += 1.0
   (key,val) = line.split()
   labels[key[16:]] = val
   if val in classCounts:
-   classCounts[val] += 1
+   classCounts[val] += 1.0
   else:
-   classCounts[val] = 1
+   classCounts[val] = 1.0
  return N, labels, classCounts
 
 def train(corpus):
@@ -36,9 +36,9 @@ def train(corpus):
   text = my_tokenize(raw)
   for t in text:
     if t in catHash[cat]:
-     catHash[cat][t] += 1
+     catHash[cat][t] += 1.0
     else:
-     catHash[cat][t] = 1 
+     catHash[cat][t] = 1.0
 
  return N, classCounts, catHash
 
@@ -57,22 +57,25 @@ def classify(N, classCounts, catHash):
   testVocab = len(f)
   for token in text:
     if token in f:
-	f[token] += 1
+	f[token] += 1.0
     else:
-	f[token] = 1
+	f[token] = 1.0
 
   k = 0.05
   outProb = {} 
-  tokenProb = 0
   for c in classCounts:
    prior = math.log(classCounts[c] / float(N))
+   tokenProb = 0.0
    for token in f:
+	#token freq in training + k
 	num = catHash[c].get(token, 0.0) + k 
-	den = sumCatHash[c] +  k*testVocab
-	tokenProb += math.log(num / den)
+	#total count in trainig + k*test vocab size 
+	den = sumCatHash[c] +  k*testVocab 
+	tokenProb += f[token]*math.log(num / den)
    outProb[c] = prior + tokenProb
 
   out = [k for k, v in outProb.iteritems() if v == max(outProb.values())]
+  print line, outProb
   outFile.write(line.rstrip('\n'))
   outFile.write(" ")
   outFile.write(''.join(out))
