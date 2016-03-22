@@ -9,11 +9,15 @@ import math
 
 def my_tokenize(text):
 # return word_tokenize(text)
- tokens = word_tokenize(text)
  #tokens = [i for i in tokens if i not in stopwords.words('english')]
  #tokens = [i for i in tokens if i not in string.punctuation]
- #st = LancasterStemmer()
- #tokens = [st.stem(i) for i in tokens]
+ tokens = word_tokenize(text)
+ s = dict((k,1) for k in stopwords.words('english'))
+ tokens = [i for i in tokens if i not in s]
+ s = dict((k,1) for k in string.punctuation)
+ tokens = [i for i in tokens if i not in s]
+ st = LancasterStemmer()
+ tokens = [st.stem(i) for i in tokens]
  return tokens
 
 def get_train_category(corpus):
