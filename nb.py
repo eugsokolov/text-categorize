@@ -75,7 +75,7 @@ def classify(N, classCounts, catHash):
    outProb[c] = prior + tokenProb
 
   out = [k for k, v in outProb.iteritems() if v == max(outProb.values())]
-  print line, outProb
+  #print line, outProb
   outFile.write(line.rstrip('\n'))
   outFile.write(" ")
   outFile.write(''.join(out))
