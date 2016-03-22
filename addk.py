@@ -75,15 +75,14 @@ def classify(N, classCounts, catHash):
    outProb[c] = prior + tokenProb
 
   out = [k for k, v in outProb.iteritems() if v == max(outProb.values())]
-  print line, outProb
   outFile.write(line.rstrip('\n'))
-  outFile.write(" ")
+  outFile.write(' ')
   outFile.write(''.join(out))
-  outFile.write("\n")
+  outFile.write('\n')
  outFile.close()
 
 
 corpus = 1
 N, classCounts, catHash = train(corpus)
 classify(N, classCounts, catHash)
-os.system("perl corpus"+str(corpus)+"_predictions.labels TC_provided/corpus"+str(corpus)+"_test.labels")
+os.system("perl TC_provided/analyze.pl corpus"+str(corpus)+"_predictions.labels TC_provided/corpus"+str(corpus)+"_test.labels")
