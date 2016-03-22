@@ -61,7 +61,7 @@ def classify(N, classCounts, catHash):
     else:
 	f[token] = 1.0
 
-  k = 0.05
+  k = 0.15
   outProb = {} 
   for c in classCounts:
    prior = math.log(classCounts[c] / float(N))
