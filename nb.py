@@ -1,12 +1,19 @@
 from nltk import word_tokenize
+from nltk.stem.lancaster import LancasterStemmer
+from nltk.corpus import stopwords
 #nltk.download('punkt')
 import os
 import re, string
 import math
 
 def my_tokenize(text):
-#try getting rid of stop words, small words, stemming
- return word_tokenize(text)
+# return word_tokenize(text)
+ tokens = word_tokenize(text)
+ tokens = [i for i in tokens if i not in stopwords.words('english')]
+ tokens = [i for i in tokens if i not in string.punctuation]
+ st = LancasterStemmer()
+ tokens = [st.stem(i) for i in tokens]
+ return tokens
 
 def get_train_category(corpus):
  f = "TC_provided/corpus"+str(corpus)+"_train.labels"
@@ -61,7 +68,7 @@ def classify(N, classCounts, catHash):
     else:
 	f[token] = 1.0
 
-  k = 0.05
+  k = 0.15
   outProb = {} 
   for c in classCounts:
    prior = math.log(classCounts[c] / float(N))
@@ -86,4 +93,4 @@ def classify(N, classCounts, catHash):
 corpus = 1
 N, classCounts, catHash = train(corpus)
 classify(N, classCounts, catHash)
-os.system("perl corpus"+str(corpus)+"_predictions.labels TC_provided/corpus"+str(corpus)+"_test.labels")
+os.system("perl TC_provided/analyze.pl corpus"+str(corpus)+"_predictions.labels TC_provided/corpus"+str(corpus)+"_test.labels")
