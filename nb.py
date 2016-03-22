@@ -2,6 +2,7 @@ from nltk import word_tokenize
 from nltk.stem.lancaster import LancasterStemmer
 from nltk.corpus import stopwords
 #nltk.download('punkt')
+#nltk.download('stopwords')
 import os
 import re, string
 import math
@@ -9,10 +10,10 @@ import math
 def my_tokenize(text):
 # return word_tokenize(text)
  tokens = word_tokenize(text)
- tokens = [i for i in tokens if i not in stopwords.words('english')]
- tokens = [i for i in tokens if i not in string.punctuation]
- st = LancasterStemmer()
- tokens = [st.stem(i) for i in tokens]
+ #tokens = [i for i in tokens if i not in stopwords.words('english')]
+ #tokens = [i for i in tokens if i not in string.punctuation]
+ #st = LancasterStemmer()
+ #tokens = [st.stem(i) for i in tokens]
  return tokens
 
 def get_train_category(corpus):
