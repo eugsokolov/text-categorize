@@ -12,10 +12,9 @@ def my_tokenize(text):
  #tokens = [i for i in tokens if i not in stopwords.words('english')]
  #tokens = [i for i in tokens if i not in string.punctuation]
  tokens = word_tokenize(text)
- s = dict((k,1) for k in stopwords.words('english'))
- tokens = [i for i in tokens if i not in s]
- s = dict((k,1) for k in string.punctuation)
- tokens = [i for i in tokens if i not in s]
+ s1 = dict((k,1) for k in stopwords.words('english'))
+ s2 = dict((k,1) for k in string.punctuation)
+ tokens = [i for i in tokens if i not in s1 and i not in s2]
 # st = LancasterStemmer()
 # tokens = [st.stem(i) for i in tokens]
  return tokens
@@ -41,8 +40,8 @@ def train(corpus):
   catHash[c] = {}
 
  for filename in open(corpus):
-  cat = labels[filename[:-5]]
-  raw = open(filename[:-5]).read()
+  cat = labels[filename.partition(' ')[0]]
+  raw = open(filename.partition(' ')[0]).read()
   text = my_tokenize(raw)
   for t in text:
     if t in catHash[cat]:
@@ -69,6 +68,7 @@ def classify(N, classCounts, catHash, inputtest):
      f[token] = 1.0
 
   k = 0.15
+  a = 1
   outProb = {} 
   for c in classCounts:
    prior = math.log(classCounts[c] / float(N))
@@ -77,7 +77,7 @@ def classify(N, classCounts, catHash, inputtest):
      #token freq in training + k
      num = catHash[c].get(token, 0.0) + k 
      #total count in trainig + k*test vocab size 
-     den = sumCatHash[c] +  k*testVocab 
+     den = sumCatHash[c] +  k*testVocab * a 
      tokenProb += f[token]*math.log(num / den)
    outProb[c] = prior + tokenProb
 
